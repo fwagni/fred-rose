@@ -1,0 +1,183 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+// Formes : *_one / *_other = une ou plusieurs personnes sur l'invitation (option count) ;
+// *_m / *_f / *_x = accord selon la civilité (x = inconnu, forme inclusive) ; p / pf = pluriel (pf : toutes féminines).
+const fr = {
+  envelope: {
+    for: 'Invitation pour',
+    open: 'Touchez le sceau pour ouvrir',
+  },
+  hero: {
+    invite: 'ont la joie de vous inviter à leur mariage',
+    days_one: 'Plus que {{count}} jour',
+    days_other: 'Plus que {{count}} jours',
+    today: 'C’est aujourd’hui !',
+    past: 'Merci d’avoir célébré avec nous',
+  },
+  dear: { m: 'Cher', f: 'Chère', x: 'Cher·e', p: 'Chers', pf: 'Chères' },
+  program: {
+    title: 'Le déroulé de la journée',
+    route: 'Itinéraire',
+    addGoogle: 'Ajouter à Google Agenda',
+    addAll: 'Ajouter toute la journée à mon calendrier',
+    stream: 'Suivre en ligne',
+  },
+  rsvp: {
+    title: 'Confirmez votre présence',
+    intro_one: 'Dites-nous, pour chaque moment, si vous serez parmi nous.',
+    intro_other: 'Dites-nous, pour chaque personne et chaque moment, qui sera parmi nous.',
+    remoteHint: 'Vous ne pouvez pas venir ? Certains moments peuvent être suivis en visioconférence : choisissez « En ligne ».',
+    deadline: 'Merci de répondre avant le {{date}}.',
+    closed: 'Les réponses sont closes. Pour tout changement, contactez les mariés.',
+    yes_m: 'Présent',
+    yes_f: 'Présente',
+    yes_x: 'Présent·e',
+    remote: 'En ligne',
+    no_m: 'Absent',
+    no_f: 'Absente',
+    no_x: 'Absent·e',
+    child: 'enfant',
+    allYes_one: 'Je serai là à tous les moments',
+    allYes_other: 'Tout le monde sera là à tous les moments',
+    submit_one: 'Envoyer ma réponse',
+    submit_other: 'Envoyer notre réponse',
+    update_one: 'Modifier ma réponse',
+    update_other: 'Modifier notre réponse',
+    sending: 'Envoi en cours…',
+    saved: 'Merci ! Votre réponse est enregistrée.',
+    previewSaved: 'Aperçu : cette réponse n’est pas enregistrée.',
+    todo: 'À compléter',
+    progress: 'Réponses : {{done}} sur {{total}}',
+    ready: 'Tout est rempli : il ne reste qu’à envoyer.',
+    incomplete_one: 'Répondez pour chaque moment avant d’envoyer.',
+    incomplete_other: 'Répondez pour chaque personne et chaque moment avant d’envoyer.',
+    error: 'La réponse n’a pas pu être envoyée. Vérifiez votre connexion et réessayez.',
+  },
+  pass: {
+    title: 'Votre pass d’entrée',
+    hint_one: 'Présentez ce code à l’accueil le jour du mariage. Une capture d’écran suffit.',
+    hint_other: 'Un seul code pour toutes les personnes nommées ci-dessus. Présentez-le à l’accueil le jour du mariage ; une capture d’écran suffit.',
+    table: 'Table',
+    pending: 'Votre pass apparaîtra ici dès que vous aurez confirmé votre présence.',
+    remote: 'Vous suivrez le mariage en ligne. Les liens de connexion sont dans le programme ci-dessus.',
+    declined: 'Merci pour votre réponse. Vous nous manquerez !',
+  },
+  card: {
+    title: 'Garder l’invitation',
+    intro: 'Une carte au format faire-part (A5), à imprimer ou à garder sur votre téléphone.',
+    pdf: 'Télécharger en PDF',
+    image: 'Enregistrer en image',
+    working: 'Préparation…',
+    error: 'La carte n’a pas pu être créée. Réessayez dans un instant.',
+    qr: 'Scannez pour répondre · votre pass d’entrée',
+  },
+  contact: { question: 'Une question ?', write: 'Écrire aux mariés sur WhatsApp' },
+  notFound: {
+    title: 'Invitation introuvable',
+    body: 'Ce lien n’est pas valide. Vérifiez qu’il a été copié en entier, ou demandez un nouveau lien à la personne qui vous a invité.',
+  },
+  loading: 'Ouverture de votre invitation…',
+  lang: 'English',
+  /** Messages envoyés par WhatsApp ou e-mail depuis l'espace organisateurs. */
+  message: {
+    invite_one:
+      'Bonjour {{names}},\n\n{{couple}} ont la joie de vous inviter à leur mariage le {{date}}.\n\nVotre invitation personnelle (merci de confirmer votre présence) :\n{{url}}',
+    invite_other:
+      'Bonjour {{names}},\n\n{{couple}} ont la joie de vous inviter à leur mariage le {{date}}.\n\nVotre invitation (merci d’indiquer la présence de chacun et chacune) :\n{{url}}',
+    inviteSubject: 'Invitation au mariage',
+    thanksSubject: 'Merci',
+  },
+};
+
+const en: typeof fr = {
+  envelope: { for: 'Invitation for', open: 'Tap the seal to open' },
+  hero: {
+    invite: 'are delighted to invite you to their wedding',
+    days_one: '{{count}} day to go',
+    days_other: '{{count}} days to go',
+    today: 'It’s today!',
+    past: 'Thank you for celebrating with us',
+  },
+  dear: { m: 'Dear', f: 'Dear', x: 'Dear', p: 'Dear', pf: 'Dear' },
+  program: {
+    title: 'The day’s programme',
+    route: 'Directions',
+    addGoogle: 'Add to Google Calendar',
+    addAll: 'Add the whole day to my calendar',
+    stream: 'Watch online',
+  },
+  rsvp: {
+    title: 'Confirm your attendance',
+    intro_one: 'Let us know, for each moment, whether you will join us.',
+    intro_other: 'Let us know, for each person and each moment, who will join us.',
+    remoteHint: 'Can’t come in person? Some moments can be followed by video call: choose “Online”.',
+    deadline: 'Please reply by {{date}}.',
+    closed: 'Replies are closed. For any change, please contact the couple.',
+    yes_m: 'Attending',
+    yes_f: 'Attending',
+    yes_x: 'Attending',
+    remote: 'Online',
+    no_m: 'Not attending',
+    no_f: 'Not attending',
+    no_x: 'Not attending',
+    child: 'child',
+    allYes_one: 'I will attend every moment',
+    allYes_other: 'Everyone will attend every moment',
+    submit_one: 'Send my reply',
+    submit_other: 'Send our reply',
+    update_one: 'Update my reply',
+    update_other: 'Update our reply',
+    sending: 'Sending…',
+    saved: 'Thank you! Your reply has been saved.',
+    previewSaved: 'Preview: this reply is not saved.',
+    todo: 'To answer',
+    progress: 'Answers: {{done}} of {{total}}',
+    ready: 'All set: just send your reply.',
+    incomplete_one: 'Please answer for every moment before sending.',
+    incomplete_other: 'Please answer for every person and every moment before sending.',
+    error: 'Your reply could not be sent. Check your connection and try again.',
+  },
+  pass: {
+    title: 'Your entry pass',
+    hint_one: 'Show this code at the welcome desk on the wedding day. A screenshot works too.',
+    hint_other: 'One code for everyone named above. Show it at the welcome desk on the wedding day; a screenshot works too.',
+    table: 'Table',
+    pending: 'Your pass will appear here once you have confirmed your attendance.',
+    remote: 'You will follow the wedding online. The joining links are in the programme above.',
+    declined: 'Thank you for your reply. We will miss you!',
+  },
+  card: {
+    title: 'Keep your invitation',
+    intro: 'A card in invitation format (A5), to print or keep on your phone.',
+    pdf: 'Download as PDF',
+    image: 'Save as image',
+    working: 'Preparing…',
+    error: 'The card could not be created. Please try again in a moment.',
+    qr: 'Scan to reply · your entry pass',
+  },
+  contact: { question: 'Any question?', write: 'Message the couple on WhatsApp' },
+  notFound: {
+    title: 'Invitation not found',
+    body: 'This link is not valid. Check that it was copied in full, or ask the person who invited you for a new link.',
+  },
+  loading: 'Opening your invitation…',
+  lang: 'Français',
+  message: {
+    invite_one:
+      'Hello {{names}},\n\n{{couple}} are delighted to invite you to their wedding on {{date}}.\n\nYour personal invitation (please confirm your attendance):\n{{url}}',
+    invite_other:
+      'Hello {{names}},\n\n{{couple}} are delighted to invite you to their wedding on {{date}}.\n\nYour invitation (please let us know whether each of you will attend):\n{{url}}',
+    inviteSubject: 'Wedding invitation',
+    thanksSubject: 'Thank you',
+  },
+};
+
+i18n.use(initReactI18next).init({
+  resources: { fr: { translation: fr }, en: { translation: en } },
+  lng: 'fr',
+  fallbackLng: 'fr',
+  interpolation: { escapeValue: false },
+});
+
+export default i18n;

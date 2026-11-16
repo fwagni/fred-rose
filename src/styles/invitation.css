@@ -1,0 +1,916 @@
+/* ---------- Socle commun des invitations ---------- */
+.invite {
+  --page: var(--navy);
+  --paper: var(--ivory);
+  --ink: var(--navy);
+  --accent: var(--gold);
+  --line: color-mix(in srgb, var(--gold) 55%, transparent);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--page);
+  color: var(--ink);
+  padding: max(1rem, env(safe-area-inset-top)) 1rem max(2rem, env(safe-area-inset-bottom));
+  position: relative;
+}
+.invite--center {
+  display: grid;
+  place-items: center;
+}
+.invite__loading {
+  color: var(--sand);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+.lang-switch {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: 0.75rem;
+  z-index: 5;
+  background: color-mix(in srgb, var(--ivory) 88%, transparent);
+  color: var(--navy);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ---------- L'enveloppe et le sceau : le moment signature ---------- */
+/* Une vraie enveloppe : proportions fixes, poche à rabats, rabat supérieur, sceau à la pointe. */
+.envelope-stage {
+  min-height: calc(100dvh - 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  color: var(--sand);
+}
+.envelope {
+  --w: min(100vw - 2rem, 400px);
+  --flap: calc(var(--w) * 0.5);
+  --seal: 88px;
+  --env-paper: var(--marine);
+  --env-flap: color-mix(in srgb, var(--marine) 88%, var(--navy));
+  --env-inside: color-mix(in srgb, var(--navy) 80%, #000);
+  --env-ink: var(--ivory);
+  --env-soft: var(--sand);
+  position: relative;
+  width: var(--w);
+  min-height: calc(var(--w) * 1.02);
+  padding: calc(var(--flap) + var(--seal) / 2 + 0.9rem) 1.25rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  background: var(--env-inside);
+  border-radius: 6px;
+  box-shadow:
+    0 1px 0 color-mix(in srgb, #fff 8%, transparent) inset,
+    0 28px 50px -22px rgba(0, 0, 0, 0.65),
+    0 8px 16px -8px rgba(0, 0, 0, 0.35);
+  perspective: 1200px;
+}
+/* Poche : rabats latéraux et rabat du bas repliés jusqu'au centre */
+.envelope__pocket {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background:
+    linear-gradient(160deg, color-mix(in srgb, #fff 6%, transparent), transparent 40%),
+    var(--env-paper);
+  clip-path: polygon(0 0, 50% calc(var(--flap) * 1.12), 100% 0, 100% 100%, 0 100%);
+}
+.envelope__pocket::before,
+.envelope__pocket::after {
+  content: '';
+  position: absolute;
+  top: calc(var(--flap) * 1.12);
+  bottom: 0;
+  width: 50%;
+  opacity: 0.55;
+}
+.envelope__pocket::before {
+  left: 0;
+  background: linear-gradient(to bottom right, transparent calc(50% - 1px), var(--line) 50%, transparent calc(50% + 1px));
+}
+.envelope__pocket::after {
+  right: 0;
+  background: linear-gradient(to bottom left, transparent calc(50% - 1px), var(--line) 50%, transparent calc(50% + 1px));
+}
+/* Rabat supérieur : l'ombre est portée par le parent (clip-path couperait un drop-shadow) */
+.envelope__flap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--flap);
+  z-index: 1;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.3));
+  transition: transform 0.9s cubic-bezier(0.6, 0, 0.3, 1);
+}
+.envelope__flap-paper {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, color-mix(in srgb, #fff 5%, var(--env-flap)), var(--env-flap));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+.envelope__flap-paper::before,
+.envelope__flap-paper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+}
+.envelope__flap-paper::before {
+  left: 0;
+  background: linear-gradient(to top right, transparent calc(50% - 1.5px), var(--accent) 50%, transparent calc(50% + 1.5px));
+  opacity: 0.55;
+}
+.envelope__flap-paper::after {
+  right: 0;
+  background: linear-gradient(to top left, transparent calc(50% - 1.5px), var(--accent) 50%, transparent calc(50% + 1.5px));
+  opacity: 0.55;
+}
+.envelope__address {
+  position: relative;
+  z-index: 1;
+  color: var(--env-ink);
+}
+.envelope__for {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--env-soft);
+  margin-bottom: 0.3rem;
+}
+.envelope__names {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 6.5vw, 2rem);
+  line-height: 1.15;
+  margin-bottom: 0.3rem;
+  overflow-wrap: anywhere;
+}
+.envelope__members {
+  font-size: 0.88rem;
+  color: var(--env-soft);
+  margin: 0 auto;
+  max-width: 34ch;
+}
+.envelope__hint {
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  margin: 0;
+  animation: hint-breathe 2.8s ease-in-out infinite;
+}
+@keyframes hint-breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+.envelope .seal {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: var(--flap);
+  width: var(--seal);
+  height: var(--seal);
+  margin: calc(var(--seal) / -2) 0 0 calc(var(--seal) / -2);
+}
+@media (min-width: 640px) {
+  .envelope {
+    --w: min(100vw - 4rem, 620px);
+    --flap: calc(var(--w) * 0.36);
+    --seal: 104px;
+    min-height: calc(var(--w) / 1.5);
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+
+.seal {
+  position: relative;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--gold) 60%, #fff 40%), var(--gold) 45%, color-mix(in srgb, var(--gold) 70%, #000 30%));
+  box-shadow:
+    0 0 0 6px color-mix(in srgb, var(--gold) 35%, transparent),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.25),
+    0 12px 24px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+}
+.seal::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--navy) 45%, transparent);
+}
+.seal:hover {
+  transform: scale(1.04) rotate(-3deg);
+}
+.envelope .seal {
+  animation: seal-pulse 2.6s ease-in-out infinite;
+}
+.envelope .seal::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%) no-repeat;
+  background-size: 250% 100%;
+  background-position: 130% 0;
+  animation: seal-shine 4s ease-in-out infinite 1s;
+  pointer-events: none;
+}
+@keyframes seal-pulse {
+  50% {
+    box-shadow:
+      0 0 0 12px color-mix(in srgb, var(--gold) 18%, transparent),
+      inset 0 -6px 14px rgba(0, 0, 0, 0.25),
+      0 12px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+@keyframes seal-shine {
+  0%,
+  55% {
+    background-position: 130% 0;
+  }
+  85%,
+  100% {
+    background-position: -30% 0;
+  }
+}
+.seal__mono {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+}
+.seal--static {
+  cursor: default;
+  margin: 0 auto 1.5rem;
+}
+.seal--small {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1rem;
+  cursor: default;
+}
+.seal--small .seal__mono {
+  font-size: 1.2rem;
+}
+
+.is-opening .envelope__flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+.is-opening .seal {
+  transform: scale(1.5);
+  opacity: 0;
+  animation: none;
+}
+.is-opening .envelope__address,
+.is-opening .envelope__hint {
+  transition: opacity 0.5s ease 0.2s;
+  opacity: 0;
+  animation: none;
+}
+.is-opening .envelope {
+  transition: transform 0.6s ease 0.35s, opacity 0.6s ease 0.35s;
+  transform: translateY(12px) scale(0.97);
+  opacity: 0;
+}
+
+/* ---------- La carte ---------- */
+.card {
+  max-width: 560px;
+  margin: 0 auto;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 3.5rem 1.5rem 2.5rem;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
+  animation: card-in 0.7s ease both;
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+.card > section,
+.card > header,
+.card > footer {
+  padding: 2.25rem 0;
+  border-top: 1px solid var(--line);
+}
+.card > header {
+  border-top: 0;
+  padding-top: 0;
+}
+.card h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.55rem;
+  margin-bottom: 1rem;
+}
+
+.hero__names {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 13vw, 4rem);
+  line-height: 1.02;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+.hero__amp {
+  font-style: italic;
+  font-size: 0.55em;
+  color: var(--accent);
+  margin: 0.15em 0;
+}
+.hero__invite {
+  font-size: 1.05rem;
+  max-width: 26ch;
+  margin: 0 auto 1rem;
+}
+.hero__date {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  margin-bottom: 0.4rem;
+}
+.hero__date::first-letter,
+.home__date::first-letter {
+  text-transform: uppercase;
+}
+.hero__countdown {
+  display: inline-block;
+  font-size: 0.9rem;
+  padding: 0.2rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.greeting p {
+  max-width: 40ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+.greeting__bow {
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.greeting__dear {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-style: italic;
+}
+.greeting__personal {
+  font-style: italic;
+  border-left: 2px solid var(--accent);
+  text-align: left;
+  padding-left: 1rem;
+}
+
+/* Le programme est une vraie séquence : on assume la ligne du temps. */
+.timeline {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  text-align: left;
+}
+.timeline__item {
+  display: grid;
+  grid-template-columns: 4.2rem 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  position: relative;
+}
+.timeline__item + .timeline__item {
+  border-top: 1px dashed var(--line);
+}
+.timeline__time {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  color: var(--accent);
+  font-weight: 600;
+  line-height: 1.2;
+}
+.timeline__body h3 {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.timeline__venue {
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+}
+.timeline__address,
+.timeline__notes {
+  font-size: 0.92rem;
+  opacity: 0.85;
+  margin-bottom: 0.4rem;
+}
+.timeline__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.btn-invite {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.8rem 1.6rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  min-height: 48px;
+}
+.btn-invite--ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-invite:disabled {
+  opacity: 0.6;
+}
+
+/* RSVP */
+.rsvp__note {
+  font-size: 0.92rem;
+  opacity: 0.85;
+}
+.rsvp__guests {
+  display: grid;
+  gap: 1rem;
+  margin: 1.25rem 0 1.5rem;
+  text-align: left;
+}
+.rsvp__guest {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem 0.5rem;
+  margin: 0;
+}
+.rsvp__guest legend {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  padding: 0 0.4rem;
+}
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 0.5rem;
+  vertical-align: middle;
+}
+.rsvp__row {
+  padding: 0.7rem 0 0.8rem;
+  position: relative;
+}
+.rsvp__row + .rsvp__row {
+  border-top: 1px dashed var(--line);
+}
+/* Ligne sans réponse : liseré doré et mention « À compléter » */
+.rsvp__row.is-todo {
+  padding-left: 0.75rem;
+}
+.rsvp__row.is-todo::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7rem;
+  bottom: 0.8rem;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.rsvp__event {
+  font-size: 0.98rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.3rem;
+}
+.rsvp__time {
+  font-weight: 400;
+  opacity: 0.75;
+}
+.rsvp__todo {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.choices {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0.45rem;
+}
+.choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 50px;
+  padding: 0.45rem 0.5rem;
+  border: 1.5px solid color-mix(in srgb, var(--ink) 28%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--paper) 92%, var(--ink));
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--ink) 14%, transparent);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.choice input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.choice:hover {
+  border-color: var(--accent);
+}
+.choice:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+.choice:has(input:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.choice__icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+}
+.choice.is-on {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: none;
+  transform: translateY(1px);
+}
+.choice.is-on .choice__icon {
+  opacity: 1;
+  color: var(--accent);
+  animation: choice-pop 0.3s ease;
+}
+.choice--remote.is-on {
+  background: color-mix(in srgb, var(--accent) 80%, var(--ink));
+  border-color: color-mix(in srgb, var(--accent) 80%, var(--ink));
+}
+.choice--remote.is-on .choice__icon {
+  color: var(--paper);
+}
+.choice--no.is-on {
+  background: color-mix(in srgb, var(--ink) 30%, var(--paper));
+  border-color: color-mix(in srgb, var(--ink) 45%, var(--paper));
+  color: var(--ink);
+}
+.choice--no.is-on .choice__icon {
+  color: var(--ink);
+}
+@keyframes choice-pop {
+  from {
+    transform: scale(0.4);
+  }
+  70% {
+    transform: scale(1.25);
+  }
+}
+.rsvp__progress {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 0.75rem;
+}
+.rsvp__progress.is-complete {
+  opacity: 1;
+  font-weight: 500;
+  color: var(--accent);
+}
+.rsvp__status {
+  min-height: 1.5em;
+  margin-top: 0.8rem;
+  font-weight: 500;
+}
+
+/* Pass d'entrée */
+.pass__qr {
+  display: inline-block;
+  padding: 0.75rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.pass__household {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  margin: 0.75rem 0 0.2rem;
+}
+.pass__table {
+  font-weight: 600;
+  color: var(--accent);
+}
+.pass__hint {
+  font-size: 0.9rem;
+  max-width: 36ch;
+  margin: 0.5rem auto 0;
+  opacity: 0.85;
+}
+
+.card-export {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.card-export__error {
+  flex-basis: 100%;
+  font-weight: 500;
+}
+.contact p {
+  margin-bottom: 0.6rem;
+}
+
+.notfound {
+  max-width: 420px;
+  text-align: center;
+  background: var(--paper);
+  padding: 2rem;
+  border-radius: 4px;
+}
+.notfound h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+/* Page d'accueil publique */
+.home {
+  text-align: center;
+  color: var(--ivory);
+  max-width: 420px;
+}
+.home__names {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 11vw, 3.4rem);
+  margin-bottom: 0.3rem;
+}
+.home__date {
+  font-family: var(--font-display);
+  color: var(--sand);
+  margin-bottom: 2rem;
+}
+.home__text {
+  font-size: 0.95rem;
+  color: var(--sand);
+}
+.home__staff {
+  display: inline-block;
+  margin-top: 2rem;
+  color: var(--ivory);
+  font-size: 0.9rem;
+}
+
+/* ---------- Modèle 1 : Marine et or ---------- */
+.tpl-marine {
+  --page: var(--navy);
+  --paper: var(--ivory);
+  --ink: var(--navy);
+}
+.tpl-marine .card {
+  outline: 1px solid var(--gold);
+  outline-offset: -12px;
+}
+.tpl-marine .card::before {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  pointer-events: none;
+}
+
+/* ---------- Modèle 2 : Jardin ---------- */
+.tpl-jardin {
+  --page: color-mix(in srgb, var(--sand) 55%, var(--ivory));
+  --paper: var(--ivory);
+  --ink: var(--marine);
+  --leaf: #6f8560;
+  --line: color-mix(in srgb, var(--leaf) 45%, transparent);
+}
+.tpl-jardin .envelope-stage {
+  color: var(--marine);
+}
+.tpl-jardin .envelope {
+  --env-paper: color-mix(in srgb, var(--leaf) 70%, var(--navy));
+  --env-flap: color-mix(in srgb, var(--leaf) 55%, var(--navy));
+  --env-inside: color-mix(in srgb, var(--leaf) 35%, var(--navy));
+}
+.hero__leaves {
+  width: 180px;
+  color: var(--leaf, var(--gold));
+  display: block;
+  margin: -1.5rem auto 0.75rem;
+}
+.tpl-jardin .hero__amp,
+.tpl-jardin .timeline__time {
+  color: var(--leaf);
+}
+
+/* ---------- Modèle 3 : Ivoire ---------- */
+.tpl-ivoire {
+  --page: var(--ivory);
+  --paper: #fffdf9;
+  --ink: var(--navy);
+}
+.tpl-ivoire .envelope-stage {
+  color: var(--marine);
+}
+.tpl-ivoire .envelope {
+  --env-paper: var(--sand);
+  --env-flap: color-mix(in srgb, var(--sand) 82%, var(--navy));
+  --env-inside: color-mix(in srgb, var(--sand) 55%, var(--navy));
+  --env-ink: var(--navy);
+  --env-soft: var(--marine);
+}
+.tpl-ivoire .card {
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+.tpl-ivoire .hero__names {
+  font-style: italic;
+}
+
+/* ---------- Modèle 4 : Nuit étoilée ---------- */
+.tpl-nuit {
+  --page: var(--navy);
+  --paper: var(--marine);
+  --ink: var(--ivory);
+  --accent: var(--gold);
+  background-color: var(--navy);
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, var(--gold), transparent),
+    radial-gradient(1px 1px at 120px 80px, var(--sand), transparent),
+    radial-gradient(1.5px 1.5px at 200px 160px, var(--gold), transparent),
+    radial-gradient(1px 1px at 60px 200px, var(--ivory), transparent);
+  background-size: 240px 240px;
+}
+.tpl-nuit .card {
+  background: color-mix(in srgb, var(--marine) 92%, transparent);
+  border: 1px solid var(--line);
+}
+.tpl-nuit .hero__names {
+  color: var(--gold);
+}
+.tpl-nuit .btn-invite {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+.tpl-nuit .btn-invite--ghost {
+  background: transparent;
+  color: var(--ivory);
+  border-color: var(--line);
+}
+.tpl-nuit .choice.is-on:not(.choice--no) {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+.tpl-nuit .choice.is-on:not(.choice--no) .choice__icon {
+  color: var(--navy);
+}
+.tpl-nuit .pass__qr {
+  border-color: var(--gold);
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: 4.5rem 3.5rem 3rem;
+    margin-top: 2rem;
+  }
+}
+
+/* ---------- Animations (désactivées si l'appareil demande moins d'animations) ---------- */
+.hero__line {
+  display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* Prénoms des mariés lettre par lettre, puis le reste de l'en-tête */
+  .hero__letter,
+  .hero__amp {
+    display: inline-block;
+    animation: letter-in 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+    animation-delay: calc(0.35s + var(--i, 0) * 45ms);
+  }
+  .hero__after {
+    animation: fade-up 0.7s ease both 1.1s;
+  }
+  /* Apparition au défilement (classe .reveal-on posée par le script) */
+  .reveal-on [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+    transition-delay: calc(var(--i, 0) * 90ms);
+  }
+  .reveal-on [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  .pass__qr--pop {
+    animation: pass-pop 0.7s cubic-bezier(0.3, 1.5, 0.5, 1) both 0.5s;
+  }
+}
+@keyframes letter-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+    filter: blur(4px);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes pass-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+/* Pluie de nœuds dorés après une réponse « présent » */
+.celebration {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 20;
+}
+.celebration__bow {
+  position: absolute;
+  top: -40px;
+  color: var(--gold);
+  animation: bow-fall 1.9s cubic-bezier(0.3, 0.4, 0.6, 1) both;
+}
+.celebration__bow:nth-child(3n) {
+  color: var(--sand);
+}
+@keyframes bow-fall {
+  from {
+    transform: translate(0, 0) rotate(0);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--drift, 0), 105vh) rotate(var(--spin, 180deg));
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .celebration {
+    display: none;
+  }
+}
